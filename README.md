@@ -1,0 +1,2 @@
+# MAC0417/MAC5768 2024
+ Notebooks em Python de MAC0417/MAC5768.
