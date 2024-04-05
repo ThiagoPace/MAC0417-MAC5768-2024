@@ -1,0 +1,26 @@
+// Each #kernel tells which function to compile; you can have many kernels
+#pragma kernel CSMain
+#pragma kernel CSInit
+
+// Create a RenderTexture with enableRandomWrite flag and set it
+// with cs.SetTexture
+Texture2D<float4> source;
+RWTexture2D<float4> Result;
+
+RWStructuredBuffer<uint4> colFreqs;
+
+[numthreads(64, 1, 1)]
+void CSInit(uint3 id : SV_DispatchThreadID)
+{
+	colFreqs[id.x] = 0;
+}
+
+[numthreads(8, 8, 1)]
+void CSMain(uint3 id : SV_DispatchThreadID)
+{
+	uint4 pix = uint4(255 * source[id.xy]);
+	InterlockedAdd(colFreqs[pix.r].r, 1);
+	InterlockedAdd(colFreqs[pix.g].g, 1);
+	InterlockedAdd(colFreqs[pix.b].b, 1);
+	InterlockedAdd(colFreqs[pix.a].a, 1);
+}
